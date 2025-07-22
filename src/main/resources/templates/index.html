@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ互联登录Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #12B7F5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .qq-btn {
+            background: #12B7F5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .qq-btn:hover {
+            background: #0FA0D8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(18, 183, 245, 0.4);
+        }
+        
+        .user-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
+        .nickname {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .info-item {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .logout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-1px);
+        }
+        
+        .welcome-text {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">QQ</div>
+        <h1>QQ互联登录Demo</h1>
+        
+        <div th:if="${!isLogin}">
+            <p class="welcome-text">
+                欢迎使用QQ互联登录Demo！<br>
+                点击下方按钮使用QQ账号快速登录
+            </p>
+            <a href="/qq/login" class="qq-btn">
+                🐧 使用QQ登录
+            </a>
+            <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; font-size: 14px; color: #856404;">
+                <strong>注意：</strong>使用前请先在 application.properties 中配置您的QQ互联App ID和App Key
+            </div>
+        </div>
+        
+        <div th:if="${isLogin}" class="user-info">
+            <h2 style="color: #12B7F5; margin-bottom: 20px;">登录成功！</h2>
+            <img th:src="${userInfo.figureurl_qq_2}" alt="头像" class="avatar" 
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNFNUU1RTUiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMCwyMCkiPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE1IiByPSI4IiBmaWxsPSIjOTk5Ii8+CjxwYXRoIGQ9Ik0zMiAzMkMzMiAyNi40NzcgMjcuNTIzIDIyIDIyIDIySDE4QzEyLjQ3NyAyMiA4IDI2LjQ3NyA4IDMyVjM0SDMyVjMyWiIgZmlsbD0iIzk5OSIvPgo8L3N2Zz4KPC9zdmc+'">
+            <div class="nickname" th:text="${userInfo.nickname}">用户昵称</div>
+            <div class="info-item">
+                <strong>性别：</strong>
+                <span th:text="${userInfo.gender == '男' ? '男' : (userInfo.gender == '女' ? '女' : '未知')}">未知</span>
+            </div>
+            <div class="info-item">
+                <strong>地区：</strong>
+                <span th:text="${userInfo.province + ' ' + userInfo.city}">未知</span>
+            </div>
+            <div class="info-item">
+                <strong>OpenID：</strong>
+                <span th:text="${userInfo.openid}" style="font-family: monospace; font-size: 12px;">OpenID</span>
+            </div>
+            
+            <a href="/qq/logout" class="logout-btn">退出登录</a>
+        </div>
+    </div>
+</body>
+</html> 
